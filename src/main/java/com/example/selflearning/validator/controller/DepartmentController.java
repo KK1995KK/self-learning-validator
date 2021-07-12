@@ -1,16 +1,23 @@
 package com.example.selflearning.validator.controller;
 
+import com.example.enums.ErrorCode;
 import com.example.selflearning.validator.entity.Department;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.selflearning.validator.vo.ResultVO;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @RestController
 @RequestMapping("/department")
+@Validated
 public class DepartmentController {
 
     /**
@@ -19,13 +26,19 @@ public class DepartmentController {
      * @return
      */
     @PostMapping
-    public String add(@RequestBody @Valid Department department){
+    public ResultVO add(@RequestBody @Valid Department department){
         /**
          * id must be   null
          * parent_id    cannot be null, and must larger than 0.
          * name cannot  be null, and the length must larger than 0.
          * createTime   cannot be a time in the future.
          */
-        return "OK";
+        return ResultVO.success();
+    }
+
+    @ExceptionHandler
+    public ResultVO exceptionHandler(MethodArgumentNotValidException e) {
+        Map<String, String> errMap = e.getBindingResult().getFieldErrors().stream().collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
+        return ResultVO.fail(ErrorCode.PARAM_ERROR, errMap);
     }
 }
