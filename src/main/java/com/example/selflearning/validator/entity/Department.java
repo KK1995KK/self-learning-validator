@@ -12,11 +12,15 @@ import java.time.LocalDateTime;
 public class Department {
     @Null(message = "id must be null!")
     Integer id;
+
     @NotNull(message = "parentId cannot be null!")
     Integer parentId;
+
     @NotBlank(message = "name cannot be blank!")
     String name;
-    @PastOrPresent(message = "Create cannot be in future!")
+
+    @PastOrPresent(message = "createTime cannot be in future!")
+    @NotNull(message = "createTime cannot be null!")
     LocalDateTime createTime;
 
     public Integer getId() {

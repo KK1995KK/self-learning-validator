@@ -5,11 +5,13 @@ import com.example.selflearning.validator.entity.Department;
 import com.example.selflearning.validator.vo.ResultVO;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -36,7 +38,7 @@ public class DepartmentController {
 
     @ExceptionHandler
     public ResultVO exceptionHandler(MethodArgumentNotValidException e) {
-        return ResultVO.fail(ErrorCode.PARAM_ERROR, e.getBindingResult().getAllErrors().stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList()));
+        Map<String, String> errMap = e.getBindingResult().getFieldErrors().stream().collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
+        return ResultVO.fail(ErrorCode.PARAM_ERROR, errMap);
     }
 }
