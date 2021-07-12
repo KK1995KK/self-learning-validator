@@ -10,13 +10,13 @@ import java.time.LocalDateTime;
 
 @Builder
 public class Department {
-    @Null
+    @Null(message = "id must be null!")
     Integer id;
-    @NotNull
+    @NotNull(message = "parentId cannot be null!")
     Integer parentId;
-    @NotBlank
+    @NotBlank(message = "name cannot be blank!")
     String name;
-    @PastOrPresent
+    @PastOrPresent(message = "Create cannot be in future!")
     LocalDateTime createTime;
 
     public Integer getId() {
